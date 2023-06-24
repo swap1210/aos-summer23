@@ -17,7 +17,7 @@ public class MainClass {
 
         switch (mode) {
             case 1:
-                Sender sender = new Sender();
+                Sender sender = new Sender(args[0]);
                 sender.startExecution();
                 break;
             case 2:

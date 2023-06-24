@@ -111,6 +111,7 @@ public class MiddleServer extends common.Parent {
         try {
             es.shutdown();
             this.serverSocket.close();
+            scan.close();
         } catch (Exception e) {
             System.out.println("Error in closing server socket.");
         }
