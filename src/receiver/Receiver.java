@@ -6,10 +6,18 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Iterator;
+import java.util.List;
+
+import registry.PatternFinderRemote;
 
 public class Receiver extends common.Parent {
     Registry registry;
+    private static PatternFinderRemote patternFinderRemote;
 
     public Receiver(String startingPort) {
         super(startingPort);
@@ -94,5 +102,41 @@ public class Receiver extends common.Parent {
 
     public void connectToRMI(String connectionURL) {
         System.out.println("Preparing to connect to " + connectionURL);
+        try {
+            Registry registry = LocateRegistry.getRegistry(connectionURL.split(":")[0],
+                    Integer.parseInt(connectionURL.split(":")[1]));
+            patternFinderRemote = (PatternFinderRemote) registry.lookup("PatternFinder");
+            while (true) {
+                System.out.print("Enter string to search in sender " + connectionURL + " or Exit: ");
+                String stringToSearch = scan.nextLine();
+                if (stringToSearch.equals("Exit"))
+                    break;
+                List<List<Integer>> resultFound = patternFinderRemote.findPattern(stringToSearch);
+                printPatternResult(resultFound);
+            }
+        } catch (NumberFormatException | RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printPatternResult(List<List<Integer>> resultFound) {
+        if (resultFound.size() > 0) {
+            Iterator<List<Integer>> row = resultFound.iterator();
+            while (row.hasNext()) {
+                List<Integer> item = row.next();
+                Iterator<Integer> itemItr = item.iterator();
+                String temp2 = "Match found at position x on line x";
+                while (itemItr.hasNext()) {
+                    String pos = itemItr.next().toString();
+                    // System.out.println("pos" + pos);
+                    temp2 = temp2.replaceFirst("x", pos);
+                }
+                System.out.println(temp2);
+                temp2 += "Match found at position x on line x";
+            }
+            System.out.println();
+        } else {
+            System.out.println("No matches found");
+        }
     }
 }
