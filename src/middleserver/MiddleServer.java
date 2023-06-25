@@ -120,6 +120,7 @@ public class MiddleServer extends common.Parent {
                 es.execute(runnable);
             } catch (Exception e) {
                 // s.close();
+                scan.nextLine();
                 e.printStackTrace();
             } finally {
                 // ss.close();

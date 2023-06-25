@@ -38,8 +38,13 @@ public class Receiver extends common.Parent {
                 DataInputStream dis = new DataInputStream(s.getInputStream());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
+                // login dialog
+                System.out.print(dis.readUTF());
+                // send login details
+                String tosend1 = scan.nextLine();
+                dos.writeUTF(tosend1);
+                // print login outcome
                 System.out.println(dis.readUTF());
-                scan.nextLine();
                 // the following loop performs the exchange of
                 // information between client and client handler
                 while (true) {
@@ -60,6 +65,9 @@ public class Receiver extends common.Parent {
                         System.out.println("Connection closed");
                         break;
                     } else if (choice == 1) {
+                        // signal server to send list
+                        dos.writeUTF(choice + "");
+                        // print the list received
                         String senderList = dis.readUTF();
                         System.out.print(senderList);
                         System.out.print("Choose the sender you wanna connect to: ");
