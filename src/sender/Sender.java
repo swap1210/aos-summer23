@@ -45,9 +45,10 @@ public class Sender extends common.Parent implements PatternFinderRemote {
         // getting localhost ip
         InetAddress ip;
         try {
-            System.out.print("Enter the port of the middle server: ");
-            int middleServerPort = scan.nextInt();
-            ip = InetAddress.getByName("localhost");
+            System.out.print("Enter the ip address:port of the middle server: ");
+            String middleServerIPPort = scan.nextLine();
+            ip = InetAddress.getByName(middleServerIPPort.split(":")[0]);
+            int middleServerPort = Integer.parseInt(middleServerIPPort.split(":")[1]);
 
             // establish the connection with argument port
             try {
@@ -58,9 +59,12 @@ public class Sender extends common.Parent implements PatternFinderRemote {
 
                 // the following loop performs the exchange of
                 // information between client and client handler
+                int twice = 2;
                 while (true) {
-                    System.out.println(dis.readUTF());
-                    scan.nextLine();
+                    if (twice-- > 0) {
+                        System.out.println(dis.readUTF());
+                    }
+                    // scan.nextLine();
                     System.out.print("Send to server: ");
                     String tosend = scan.nextLine();
                     dos.writeUTF(tosend);
@@ -74,9 +78,6 @@ public class Sender extends common.Parent implements PatternFinderRemote {
                         break;
                     }
 
-                    // printing date or time as requested by client
-                    String received = dis.readUTF();
-                    System.out.println(received);
                 }
 
                 // closing resources

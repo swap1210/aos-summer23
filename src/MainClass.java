@@ -21,7 +21,7 @@ public class MainClass {
                 sender.startExecution();
                 break;
             case 2:
-                Receiver receiver = new Receiver();
+                Receiver receiver = new Receiver(args[0]);
                 receiver.startExecution();
                 break;
             case 3:

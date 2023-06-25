@@ -17,11 +17,13 @@ import model.User;
 
 public class MiddleServer extends common.Parent {
     List<User> userList;
+    List<String> senderList;
     ServerSocket serverSocket;
 
     public MiddleServer(String startingPort) {
         super(startingPort);
         this.userList = new ArrayList<>();
+        this.senderList = new ArrayList<>();
         readUsers();
         startServerSocket();
     }
@@ -55,6 +57,16 @@ public class MiddleServer extends common.Parent {
         }
     }
 
+    // Print receivers
+    private void printSenders() {
+        System.out.println("Receiver IP\tReceiver Port");
+        System.out.println("----------------------------------------");
+        for (String receiver : senderList) {
+            System.out.println(receiver.split(":")[0] + "\t\t" + receiver.split(":")[1]);
+            System.out.println("----------------------------------------");
+        }
+    }
+
     private void startServerSocket() {
         try {
             this.serverSocket = new ServerSocket(this.startingPort);
@@ -73,8 +85,7 @@ public class MiddleServer extends common.Parent {
             Socket s = null;
 
             try {
-
-                System.out.println("Press 0 Exit\n1 Accept more connections\n2 Print Users");
+                System.out.println("Press 0 Exit\n1 Accept more connections\n2 Print Users\n3 Print Senders");
                 int choice = scan.nextInt();
                 if (choice == 0) {
                     break;
@@ -82,6 +93,12 @@ public class MiddleServer extends common.Parent {
                     System.out.println("Accepting more connections now...");
                 } else if (choice == 2) {
                     printUsers();
+                    continue;
+                } else if (choice == 3) {
+                    printSenders();
+                    continue;
+                } else {
+                    System.out.println("Invalid choice");
                     continue;
                 }
 
