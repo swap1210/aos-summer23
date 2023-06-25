@@ -69,7 +69,7 @@ public class Receiver extends common.Parent {
                         dos.writeUTF(choice + "");
                         // print the list received
                         String senderList = dis.readUTF();
-                        System.out.print(senderList);
+                        System.out.println(senderList);
                         System.out.print("Choose the sender you wanna connect to: ");
                         int select = scan.nextInt();
                         String[] senderArray = senderList.split("\n");

@@ -35,11 +35,7 @@ public class MiddleServerThread extends SocketThread implements Runnable {
                 } else if (foundUser.role.equals("receiver")) {
                     // Receiver logic here
                     // send receiver list of senders to connect to
-                    int index = 0;
-                    this.receiverStr = "";
-                    this.middleServer.senderList.forEach(val -> {
-                        this.receiverStr += index + ". " + val + "\n";
-                    });
+                    this.receiverStr = String.join("\n", this.middleServer.senderList);
                     System.out.println("waiting for receiver to send 1");
                     textReceived = this.dis.readUTF();
                     // receiver wants list of senders
