@@ -111,32 +111,11 @@ public class Receiver extends common.Parent {
                 String stringToSearch = scan.nextLine();
                 if (stringToSearch.equals("Exit"))
                     break;
-                List<List<Integer>> resultFound = patternFinderRemote.findPattern(stringToSearch);
-                printPatternResult(resultFound);
+                System.out.print(patternFinderRemote.findPattern(stringToSearch));
             }
         } catch (NumberFormatException | RemoteException | NotBoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void printPatternResult(List<List<Integer>> resultFound) {
-        if (resultFound.size() > 0) {
-            Iterator<List<Integer>> row = resultFound.iterator();
-            while (row.hasNext()) {
-                List<Integer> item = row.next();
-                Iterator<Integer> itemItr = item.iterator();
-                String temp2 = "Match found at position x on line x";
-                while (itemItr.hasNext()) {
-                    String pos = itemItr.next().toString();
-                    // System.out.println("pos" + pos);
-                    temp2 = temp2.replaceFirst("x", pos);
-                }
-                System.out.println(temp2);
-                temp2 += "Match found at position x on line x";
-            }
-            System.out.println();
-        } else {
-            System.out.println("No matches found");
-        }
-    }
 }

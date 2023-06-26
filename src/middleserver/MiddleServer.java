@@ -70,8 +70,6 @@ public class MiddleServer extends common.Parent {
     private void startServerSocket() {
         try {
             this.serverSocket = new ServerSocket(this.startingPort);
-            System.out.println("Server socket created on " + java.net.InetAddress.getLocalHost().getHostAddress() + ":"
-                    + this.startingPort);
         } catch (Exception e) {
             System.out.println("Error in creating server socket.");
         }
@@ -85,7 +83,9 @@ public class MiddleServer extends common.Parent {
             Socket s = null;
 
             try {
-                System.out.println("Press 0 Exit\n1 Accept more connections\n2 Print Users\n3 Print Senders");
+                System.out.println("Server socket [" + java.net.InetAddress.getLocalHost().getHostAddress()
+                        + ":" + this.startingPort
+                        + "]\nPress 0 Exit\n1 Accept more connections\n2 Print Users\n3 Print Senders");
                 int choice = scan.nextInt();
                 if (choice == 0) {
                     break;

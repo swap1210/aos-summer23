@@ -26,7 +26,7 @@ public class MiddleServerThread extends SocketThread implements Runnable {
             // check if middle server has the user
             User foundUser = middleServer.getUser(userResponse[0], userResponse[1]);
             if (foundUser != null) {
-                this.dos.writeUTF("Login successful, Welcome " + foundUser.role);
+                this.dos.writeUTF("Login successful, Welcome " + foundUser.role + "\nSend your connection details: ");
                 if (foundUser.role.equals("sender")) {
                     // Sender logic here
                     // sender will send his connection details as next response
@@ -36,14 +36,13 @@ public class MiddleServerThread extends SocketThread implements Runnable {
                     // Receiver logic here
                     // send receiver list of senders to connect to
                     this.receiverStr = String.join("\n", this.middleServer.senderList);
-                    System.out.println("waiting for receiver to send 1");
+                    // System.out.println("waiting for receiver to send 1");
                     textReceived = this.dis.readUTF();
                     // receiver wants list of senders
                     if (Integer.parseInt(textReceived) == 1) {
                         // send list of senders
                         dos.writeUTF(receiverStr);
                     }
-
                 }
 
                 // String command = this.dis.readUTF();

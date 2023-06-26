@@ -60,12 +60,8 @@ public class Sender extends common.Parent implements PatternFinderRemote {
                 // the following loop performs the exchange of
                 // information between client and client handler
                 int twice = 2;
-                while (true) {
-                    if (twice-- > 0) {
-                        System.out.println(dis.readUTF());
-                    }
-                    // scan.nextLine();
-                    System.out.print("Send to server: ");
+                while (twice-- > 0) {
+                    System.out.print(dis.readUTF());
                     String tosend = scan.nextLine();
                     dos.writeUTF(tosend);
 
@@ -94,7 +90,7 @@ public class Sender extends common.Parent implements PatternFinderRemote {
     }
 
     @Override
-    public List<List<Integer>> findPattern(String pattern) throws RemoteException {
+    public String findPattern(String pattern) throws RemoteException {
         return MatchAPattern.perform(pattern);
     }
 
