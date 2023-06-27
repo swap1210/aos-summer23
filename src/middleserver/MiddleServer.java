@@ -107,7 +107,7 @@ public class MiddleServer extends common.Parent {
                 // socket object to receive incoming client requests
                 s = serverSocket.accept();
 
-                System.out.println("A new client is connected : " + s);
+                System.out.println("A new client is connected : " + s.getLocalAddress().toString() + ":" + s.getPort());
 
                 // obtaining input and out streams
                 DataInputStream dis = new DataInputStream(s.getInputStream());
