@@ -10,9 +10,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Iterator;
-import java.util.List;
 
+import common.MyConst;
 import registry.PatternFinderRemote;
 
 public class Receiver extends common.Parent {
@@ -78,9 +77,9 @@ public class Receiver extends common.Parent {
                         // print the list received
                         String senderList = dis.readUTF();
                         System.out.println(senderList);
-                        System.out.print("Choose the sender you wanna connect to: ");
-                        int select = scan.nextInt();
                         String[] senderArray = senderList.split("\n");
+                        System.out.print("Choose the sender you wanna connect to: " + senderArray.length);
+                        int select = scan.nextInt();
                         this.connectToRMI(senderArray[select]);
                     }
                     dos.writeUTF(tosend);
@@ -91,7 +90,8 @@ public class Receiver extends common.Parent {
                 dis.close();
                 dos.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("RMI Registration error");
+                // e.printStackTrace();
             }
         } catch (
 
@@ -101,11 +101,12 @@ public class Receiver extends common.Parent {
     }
 
     public void connectToRMI(String connectionURL) {
-        System.out.println("Preparing to connect to " + connectionURL);
+        System.out.println("Preparing to connect to " + connectionURL + ".");
         try {
             Registry registry = LocateRegistry.getRegistry(connectionURL.split(":")[0],
                     Integer.parseInt(connectionURL.split(":")[1]));
-            patternFinderRemote = (PatternFinderRemote) registry.lookup("PatternFinder");
+            patternFinderRemote = (PatternFinderRemote) registry.lookup(MyConst.REGISTRY_NAME);
+            scan.nextLine();
             while (true) {
                 System.out.print("Enter string to search in sender " + connectionURL + " or Exit: ");
                 String stringToSearch = scan.nextLine();

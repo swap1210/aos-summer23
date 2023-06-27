@@ -11,12 +11,12 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
 
+import common.MyConst;
 import registry.PatternFinderRemote;
 import service.MatchAPattern;
 
-public class Sender extends common.Parent implements PatternFinderRemote {
+public class Sender extends common.Parent {
     Registry registry;
 
     public Sender(String startingPort) {
@@ -28,14 +28,18 @@ public class Sender extends common.Parent implements PatternFinderRemote {
         System.out.println("Running in Sender mode");
         registerRMI();
         connectToSocket();
-
     }
 
     private void registerRMI() {
         try {
             registry = LocateRegistry.createRegistry(startingPort);
-            PatternFinderRemote pfr = (PatternFinderRemote) UnicastRemoteObject.exportObject(this, 0);
-            registry.rebind("PatternFinder", pfr);
+            PatternFinderRemote pfr = (PatternFinderRemote) UnicastRemoteObject.exportObject(new PatternFinderRemote() {
+                @Override
+                public String findPattern(String pattern) throws RemoteException {
+                    return MatchAPattern.perform(pattern);
+                }
+            }, 0);
+            registry.rebind(MyConst.REGISTRY_NAME, pfr);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -64,11 +68,19 @@ public class Sender extends common.Parent implements PatternFinderRemote {
                     System.out.print(dis.readUTF());
                     String tosend = scan.nextLine();
                     dos.writeUTF(tosend);
+                }
 
+                // show connection registration details from middle server
+                System.out.println(dis.readUTF());
+
+                while (true) {
+                    System.out.print("Press Exit anytime to close this sender: ");
+                    String tosend = scan.nextLine();
                     // If client sends exit,close this connection
                     // and then break from the while loop
                     if (tosend.equals("Exit")) {
-                        System.out.println("Closing this connection : " + s);
+                        System.out.println(
+                                "Closing this connection " + s.getLocalAddress().toString() + ":" + s.getPort() + ".");
                         s.close();
                         System.out.println("Connection closed");
                         break;
@@ -80,18 +92,13 @@ public class Sender extends common.Parent implements PatternFinderRemote {
                 scan.close();
                 dis.close();
                 dos.close();
-                registry.unbind("PatternFinder");
+                registry.unbind(MyConst.REGISTRY_NAME);
             } catch (IOException | NotBoundException e) {
                 e.printStackTrace();
             }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public String findPattern(String pattern) throws RemoteException {
-        return MatchAPattern.perform(pattern);
     }
 
 }

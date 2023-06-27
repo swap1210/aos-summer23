@@ -3,6 +3,7 @@ package middleserver;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import common.SocketThread;
@@ -31,17 +32,37 @@ public class MiddleServerThread extends SocketThread implements Runnable {
                     // Sender logic here
                     // sender will send his connection details as next response
                     String senderConnectionDetails = this.dis.readUTF();
-                    this.middleServer.senderList.add(senderConnectionDetails);
+                    // receiver wants list of senders
+                    if (senderConnectionDetails.contains(":")
+                            && this.middleServer.senderList.add(senderConnectionDetails)) {
+                        // send list of senders
+                        dos.writeUTF("Information registered in server.");
+                    } else {
+                        dos.writeUTF("Invalid self registration details.");
+                    }
                 } else if (foundUser.role.equals("receiver")) {
                     // Receiver logic here
                     // send receiver list of senders to connect to
                     this.receiverStr = String.join("\n", this.middleServer.senderList);
-                    // System.out.println("waiting for receiver to send 1");
-                    textReceived = this.dis.readUTF();
-                    // receiver wants list of senders
-                    if (Integer.parseInt(textReceived) == 1) {
-                        // send list of senders
-                        dos.writeUTF(receiverStr);
+                    while (true) {
+                        try {
+                            textReceived = this.dis.readUTF();
+                        } catch (Exception e) {
+                            System.out.println("Connection closed abruptly by "
+                                    + (((InetSocketAddress) s.getRemoteSocketAddress()).getAddress()).toString()
+                                            .replace("/", ""));
+                        }
+                        try {
+                            // receiver wants list of senders
+                            if (Integer.parseInt(textReceived) == 1) {
+                                // send list of senders
+                                dos.writeUTF(receiverStr);
+                                continue;
+                            }
+                        } catch (Exception e) {
+                            dos.writeUTF("Invalid Input");
+                            break;
+                        }
                     }
                 }
 

@@ -12,7 +12,7 @@ public class SocketThread {
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
     protected final DataInputStream dis;
     protected final DataOutputStream dos;
-    final Socket s;
+    protected final Socket s;
 
     public SocketThread(Socket s, DataInputStream dis, DataOutputStream dos) {
         this.s = s;

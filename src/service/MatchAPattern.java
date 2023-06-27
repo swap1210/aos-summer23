@@ -51,9 +51,8 @@ public class MatchAPattern {
                 res += temp2 + "\n";
                 temp2 += "Match found at position x on line x";
             }
-            res += "\n";
         } else {
-            res = "No matches found";
+            res = "No matches found\n";
         }
         return res;
     }

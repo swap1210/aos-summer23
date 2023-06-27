@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,13 +19,13 @@ import model.User;
 
 public class MiddleServer extends common.Parent {
     List<User> userList;
-    List<String> senderList;
+    Set<String> senderList;
     ServerSocket serverSocket;
 
     public MiddleServer(String startingPort) {
         super(startingPort);
         this.userList = new ArrayList<>();
-        this.senderList = new ArrayList<>();
+        this.senderList = new TreeSet<String>();
         readUsers();
         startServerSocket();
     }

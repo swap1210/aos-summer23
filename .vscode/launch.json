@@ -6,12 +6,18 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "T2",
+			"request": "launch",
+			"mainClass": "T2",
+			"projectName": "aos-summer23_ed278205"
+		},
+		{
+			"type": "java",
 			"name": "Launch with Arguments Prompt",
 			"request": "launch",
 			"mainClass": "",
 			"args": "${command:SpecifyProgramArgs}"
 		},
-
 		{
 			"type": "java",
 			"name": "Current File",
