@@ -9,6 +9,8 @@ import java.util.List;
 import common.MyConst;
 
 public class MatchAPattern {
+
+    // method to perform pattern matching on the predefined text file
     public static String perform(String p_pattern) {
         List<List<Integer>> res = new LinkedList<>();
         BufferedReader reader = null;
@@ -36,6 +38,7 @@ public class MatchAPattern {
         return printPatternResult(res);
     }
 
+    // Method to print the result of pattern matching
     private static String printPatternResult(List<List<Integer>> resultFound) {
         String res = "";
         if (resultFound.size() > 0) {

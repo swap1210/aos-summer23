@@ -66,8 +66,6 @@ public class MiddleServerThread extends SocketThread implements Runnable {
                     }
                 }
 
-                // String command = this.dis.readUTF();
-                // this.dos.writeUTF("Command received: " + command);
             } else {
                 this.dos.writeUTF("Login failed");
             }
