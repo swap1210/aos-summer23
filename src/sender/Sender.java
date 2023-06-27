@@ -61,14 +61,21 @@ public class Sender extends common.Parent {
                 DataInputStream dis = new DataInputStream(s.getInputStream());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-                // the following loop performs the exchange of
-                // information between client and client handler
-                int twice = 2;
-                while (twice-- > 0) {
-                    System.out.print(dis.readUTF());
-                    String tosend = scan.nextLine();
-                    dos.writeUTF(tosend);
-                }
+                // login prompt
+                String loginPrompt = "";
+                do {
+                    loginPrompt = dis.readUTF();
+                    System.out.print(loginPrompt);
+                    dos.writeUTF(scan.nextLine());
+                } while (loginPrompt.equals("Enter credentials to login username/password: ") || loginPrompt
+                        .equals("Login failed! try again: "));
+
+                // show Welcome message
+                System.out.println(loginPrompt);
+
+                System.out.println("Enter your connection details: ");
+                // send connection details to middle server to self register
+                dos.writeUTF(ip.getHostAddress() + ":" + startingPort);
 
                 // show connection registration details from middle server
                 System.out.println(dis.readUTF());

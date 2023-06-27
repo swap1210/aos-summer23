@@ -20,54 +20,67 @@ public class MiddleServerThread extends SocketThread implements Runnable {
 
     @Override
     public void run() {
+        User foundUser;
+        String textReceived;
         try {
             this.dos.writeUTF("Enter credentials to login username/password: ");
-            String textReceived = this.dis.readUTF();
-            String[] userResponse = textReceived.split("/");
-            // check if middle server has the user
-            User foundUser = middleServer.getUser(userResponse[0], userResponse[1]);
-            if (foundUser != null) {
-                this.dos.writeUTF("Login successful, Welcome " + foundUser.role + "\nSend your connection details: ");
-                if (foundUser.role.equals("sender")) {
-                    // Sender logic here
-                    // sender will send his connection details as next response
-                    String senderConnectionDetails = this.dis.readUTF();
-                    // receiver wants list of senders
-                    if (senderConnectionDetails.contains(":")
-                            && this.middleServer.senderList.add(senderConnectionDetails)) {
-                        // send list of senders
-                        dos.writeUTF("Information registered in server.");
+            while (true) {
+                String errorMsg = "Login failed! try again: ";
+                try {
+                    textReceived = this.dis.readUTF();
+                    String[] userResponse = textReceived.split("/");
+                    // check if middle server has the user
+                    foundUser = middleServer.getUser(userResponse[0], userResponse[1]);
+                    if (foundUser != null) {
+                        break;
                     } else {
-                        dos.writeUTF("Invalid self registration details.");
+                        this.dos.writeUTF(errorMsg);
                     }
-                } else if (foundUser.role.equals("receiver")) {
-                    // Receiver logic here
-                    // send receiver list of senders to connect to
-                    this.receiverStr = String.join("\n", this.middleServer.senderList);
-                    while (true) {
-                        try {
-                            textReceived = this.dis.readUTF();
-                        } catch (Exception e) {
-                            System.out.println("Connection closed abruptly by "
-                                    + (((InetSocketAddress) s.getRemoteSocketAddress()).getAddress()).toString()
-                                            .replace("/", ""));
+                } catch (Exception e) {
+                    System.out.println("Login attempt failure by " + s.getRemoteSocketAddress().toString()
+                            .replace("/", ""));
+                    this.dos.writeUTF(errorMsg);
+                }
+            }
+
+            // login sucessful
+            this.dos.writeUTF("Login successful, Welcome " + foundUser.role + "!");
+            if (foundUser.role.equals("sender")) {
+                // Sender logic here
+                // sender will send his connection details as next response
+                String senderConnectionDetails = this.dis.readUTF();
+                // receiver wants list of senders
+                if (senderConnectionDetails.contains(":")
+                        && this.middleServer.senderList.add(senderConnectionDetails)) {
+                    // send list of senders
+                    dos.writeUTF("You are registered in server.");
+                } else {
+                    dos.writeUTF("Invalid self registration details.");
+                }
+            } else if (foundUser.role.equals("receiver")) {
+                // Receiver logic here
+                // send receiver list of senders to connect to
+                this.receiverStr = String.join("\n", this.middleServer.senderList);
+                while (true) {
+                    try {
+                        textReceived = this.dis.readUTF();
+                    } catch (Exception e) {
+                        System.out.println("Connection closed abruptly by "
+                                + (((InetSocketAddress) s.getRemoteSocketAddress()).getAddress()).toString()
+                                        .replace("/", ""));
+                    }
+                    try {
+                        // receiver wants list of senders
+                        if (Integer.parseInt(textReceived) == 1) {
+                            // send list of senders
+                            dos.writeUTF(receiverStr);
+                            continue;
                         }
-                        try {
-                            // receiver wants list of senders
-                            if (Integer.parseInt(textReceived) == 1) {
-                                // send list of senders
-                                dos.writeUTF(receiverStr);
-                                continue;
-                            }
-                        } catch (Exception e) {
-                            dos.writeUTF("Invalid Input");
-                            break;
-                        }
+                    } catch (Exception e) {
+                        dos.writeUTF("Invalid Input");
+                        break;
                     }
                 }
-
-            } else {
-                this.dos.writeUTF("Login failed");
             }
         } catch (IOException e) {
             e.printStackTrace();
