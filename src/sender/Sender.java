@@ -56,6 +56,7 @@ public class Sender extends common.Parent {
 
             // establish the connection with argument port
             try {
+                System.out.println("Waiting for Middle server to accept connection...");
                 Socket s = new Socket(ip, middleServerPort);
                 // obtaining input and out streams
                 DataInputStream dis = new DataInputStream(s.getInputStream());
@@ -65,6 +66,9 @@ public class Sender extends common.Parent {
                 String loginPrompt = "";
                 do {
                     loginPrompt = dis.readUTF();
+                    if (loginPrompt.contains("successful")) {
+                        break;
+                    }
                     System.out.print(loginPrompt);
                     dos.writeUTF(scan.nextLine());
                 } while (loginPrompt.equals("Enter credentials to login username/password: ") || loginPrompt
@@ -73,7 +77,6 @@ public class Sender extends common.Parent {
                 // show Welcome message
                 System.out.println(loginPrompt);
 
-                System.out.println("Enter your connection details: ");
                 // send connection details to middle server to self register
                 dos.writeUTF(ip.getHostAddress() + ":" + startingPort);
 
