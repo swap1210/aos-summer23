@@ -78,7 +78,7 @@ public class Receiver extends common.Parent {
                         String senderList = dis.readUTF();
                         System.out.println(senderList);
                         String[] senderArray = senderList.split("\n");
-                        System.out.print("Choose the sender you wanna connect to: " + senderArray.length);
+                        System.out.print("Choose the sender you wanna connect to: ");
                         int select = scan.nextInt();
                         this.connectToRMI(senderArray[select]);
                     }
